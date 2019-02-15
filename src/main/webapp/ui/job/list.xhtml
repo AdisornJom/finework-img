@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html">
+
+    <h:form id="listForm">
+        <p:dataTable var="item" binding="#{bindingController.dataTableModel}" value="#{job101Controller.items}">
+            <f:facet name="header">
+                <div class="ui-fluid">
+                    <p:panelGrid columns="7" layout="grid" columnClasses="ui-grid-col-3,ui-grid-col-3,ui-grid-col-3,
+                                 ui-grid-col-3,ui-grid-col-3,ui-grid-col-3,ui-grid-col-3,ui-grid-col-3" styleClass="ui-panelgrid-blank">
+ 
+                        <p:inputText placeholder="เลขที่" value="#{job101Controller.documentno}" />
+                        
+                        <h:panelGroup >
+                            <p:autoComplete placeholder="หน่วยงาน/โครงการ" id="workunit" dropdown="true" value="#{job101Controller.workunit_find}" 
+                                            completeMethod="#{job101Controller.completeSelectWorkunit}" 
+                                            var="wkunit" itemLabel="#{wkunit.workunitName}" 
+                                            itemValue="#{wkunit}" 
+                                            converter="#{workUnitConverter}"
+                                            scrollHeight="250" >
+                                <p:ajax event="query" global="false"/>
+                            </p:autoComplete>
+                            <p:watermark  for="workunit" value="-" />
+                        </h:panelGroup>
+                        
+                        <p:calendar placeholder="#{msgs['common.startDate']}" binding="#{bindingController.calendar}" value="#{job101Controller.startDate}"/>
+                        <p:calendar placeholder="#{msgs['common.toDate']}" binding="#{bindingController.calendar}" value="#{job101Controller.toDate}"/>
+                        <p:commandButton binding="#{bindingController.btnSearch}" value="#{msgs['btn.search']}"
+                                         actionListener="#{job101Controller.search()}" styleClass="search-btn"  update="listForm"/>
+                    </p:panelGrid>
+                </div>
+            </f:facet>
+            
+            <p:column headerText="ลำดับ" >
+                <h:outputText value="#{(rowNumber+1)}" />
+            </p:column>
+            
+            <p:column headerText="ใบงานเลขที่"  sortBy="#{item.documentNo}" >
+                 <h:outputText value="#{item.documentNo}" style="color:blue"/>
+            </p:column>
+             
+            <p:column headerText="ชื่อผู้ควบคุมงาน(โฟร์แมน)">
+                <h:outputText value="#{item.foremanId.foremanNickname}" style="color:blue"/>
+            </p:column>
+             
+            <p:column headerText="หน่วยงาน/โครงการ" >
+                <h:outputText value="#{item.workunitId.workunitName}" style="color:blue"/>
+            </p:column>
+             
+             <p:column  headerText="วันที่ทำรายการ " sortBy="#{item.jobDate}">
+                <h:outputText value="#{item.jobDate}">
+                    <f:convertDateTime pattern="dd-MM-yyyy"/>
+                </h:outputText>
+            </p:column>
+             
+             <p:column  headerText="วันที่เริ่มปฏิบัติงาน " sortBy="#{item.jobStartdate}">
+                <h:outputText value="#{item.jobStartdate}">
+                    <f:convertDateTime pattern="dd-MM-yyyy"/>
+                </h:outputText>
+            </p:column>
+            
+             <p:column headerText="วันที่สิ้นสุดปฺฏิบัติงาน" sortBy="#{item.jobEnddate}">
+                <h:outputText value="#{item.jobEnddate}">
+                    <f:convertDateTime pattern="dd-MM-yyyy"/>
+                </h:outputText>
+            </p:column>
+
+            
+            <p:column >
+                <p:commandButton rendered="false" id="view" icon="fa fa-fw fa-file-text-o"/>
+
+                <p:commandButton id="edit" icon="fa fa-cloud-upload"  action="#{job101Controller.prepareEdit()}" update="listForm">
+                    <f:setPropertyActionListener value="#{item}" target="#{job101Controller.selected}" />
+                </p:commandButton>
+
+            </p:column>
+
+            <f:facet name="footer">
+                <h:outputText value="#{msgs['messages.code.2022']} "/>
+                <h:outputText value="#{job101Controller.items.size()}">
+                    <f:convertNumber pattern="#,##0"/>
+                </h:outputText>
+                <h:outputText value=" #{msgs['messages.code.2023']}"/>
+            </f:facet>
+        </p:dataTable>
+
+    </h:form>
+
+</ui:composition>

@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                template="/templates/default-template.xhtml">
+
+    <ui:define name="viewname">upload รูปภาพ</ui:define>
+
+    <ui:define name="content">
+        <h:form id="listForm" >
+            <div class="ui-g">
+                <div class="ui-g-12 ui-md-12 ui-lg-12">
+                    <p:messages id="edit_msg" autoUpdate="false" showIcon="false"/>
+                </div>
+                <div class="ui-g-12 ui-md-12 ui-lg-12">
+                    <p:fieldset legend="รายละเอียด" style="border: 0px;">
+                        <p:panel style="max-width: 900px;margin-bottom: 10px;border-right: 0px;border-radius: 0px;">
+                            <div class="ui-fluid">
+                                <p:panelGrid columns="2" layout="grid" columnClasses="ui-grid-col-3,ui-grid-col-8" styleClass="ui-panelgrid-blank form-group">
+                                    <h:panelGroup>
+                                        <p:outputLabel value="ใบงานเลขที่ ："/>
+                                    </h:panelGroup>
+                                    <h:panelGroup>
+                                        <h:outputText value="#{job101Controller.selected.documentNo}" style="color:blue"/>
+                                    </h:panelGroup>
+
+                                    <h:panelGroup>
+                                        <p:outputLabel value="ชื่อผู้ควบคุมงาน(โฟร์แม่น)："/>
+                                    </h:panelGroup>
+                                    <h:panelGroup>
+                                        <h:outputText value="#{job101Controller.selected.foremanId.foremanNickname}" style="color:blue"/>
+                                    </h:panelGroup>
+
+                                    <h:panelGroup>
+                                        <p:outputLabel value="หน่วยงาน/โครงการ："/>
+                                    </h:panelGroup>
+                                    <h:panelGroup>
+                                        <h:outputText value="#{job101Controller.selected.workunitId.workunitName}" style="color:blue"/>
+                                    </h:panelGroup>
+
+                                    <h:panelGroup>
+                                        <p:outputLabel value="วันที่เริ่มปฏิบัติงาน："/>
+                                    </h:panelGroup>
+                                    <h:panelGroup>
+                                        <h:outputText value="#{job101Controller.selected.jobStartdate}" style="color:blue">
+                                            <f:convertDateTime pattern="dd-MM-yyyy"/>
+                                        </h:outputText>
+                                    </h:panelGroup>
+                                    <h:panelGroup>
+                                        <p:outputLabel value="วันที่สิ้นสุดปฺฏิบัติงาน："/>
+                                    </h:panelGroup>
+                                    <h:panelGroup>
+                                        <h:outputText value="#{job101Controller.selected.jobEnddate}" style="color:blue">
+                                            <f:convertDateTime pattern="dd-MM-yyyy"/>
+                                        </h:outputText>
+                                    </h:panelGroup>
+
+                                    <h:panelGroup>
+                                        <p:outputLabel value="#{msgs['p106.uploadPic']}："/>
+                                    </h:panelGroup>
+                                    <h:panelGroup>
+                                        
+                                      <p:fileUpload fileUploadListener="#{job101Controller.handleFileUpload}"
+                                                      mode="advanced"
+                                                      dragDropSupport="false"
+                                                      skinSimple="true"
+                                                      multiple="true" update="listForm:edit_msg listForm:detailPic"
+                                                      sizeLimit="307200000"
+                                                      fileLimit="5"
+                                                      cancelLabel="#{msgs['btn.cancel']}"
+                                                      uploadLabel="#{msgs['btn.upload']}"
+                                                      label="#{msgs['btn.choose']}" 
+                                                      allowTypes="/(\.|\/)(gif|jpg|jpe?g|png)$/"
+                                                      style="margin-bottom: 4px;" />
+                                        
+                                        <p:outputLabel value="เลือกรูปภาพไม่เกิน 5 รูป ขนาดรูปไม่ได้ 5mb" styleClass="sub-label"/>
+                                    </h:panelGroup>
+                                </p:panelGrid>
+                            </div>
+                        </p:panel>
+                    </p:fieldset>
+                    
+                    <p:fieldset legend="รายการรูป" style="border: 0px;">
+                        <p:panel style="max-width: 900px;margin-bottom: 10px;border-right: 0px;border-radius: 0px;">
+                            <p:dataTable id="detailPic" var="item" binding="#{bindingController.dataTableModel}" value="#{job101Controller.selected.sysCreatejobDetailList}">
+                                <p:column headerText="ลำดับ" >
+                                    <h:outputText value="#{(rowNumber+1)}" />
+                                </p:column>
+
+                                <p:column headerText="ชื่อรูป" >
+                                    <h:outputText value="#{item.jobImg}" style="color:blue"/>
+                                </p:column>
+
+                                <f:facet name="footer">
+                                    <h:outputText value="#{msgs['messages.code.2022']} "/>
+                                    <h:outputText value="#{job101Controller.selected.sysCreatejobDetailList.size()}">
+                                        <f:convertNumber pattern="#,##0"/>
+                                    </h:outputText>
+                                    <h:outputText value=" #{msgs['messages.code.2023']}"/>
+                                </f:facet>
+                            </p:dataTable>
+                        </p:panel>
+                    </p:fieldset>
+                </div>
+                <div class="ui-g-12">
+                    <h:panelGrid columns="2">
+                        <p:commandButton binding="#{bindingController.btnSave}" value="#{msgs['btn.save']}" 
+                                         action="#{job101Controller.edit()}" styleClass="edit-btn" update="edit_msg"/>
+                        <p:commandButton binding="#{bindingController.btnCancel}" value="#{msgs['btn.cancel']}" 
+                                         action="#{job101Controller.cancel()}" styleClass="clear-btn" update="edit_msg"/>
+                    </h:panelGrid>
+                </div>
+            </div>    
+        </h:form>
+    </ui:define>
+
+</ui:composition>
